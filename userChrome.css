@@ -1992,8 +1992,10 @@ sidebar-main {
     overflow: hidden !important;
     transition: all 0.2s ease !important;
   }
-  /* Hover reveal applies to both modes – revert restores native button widths */
-  #nav-bar:hover :is(
+  /* Hover reveal applies to both modes – revert restores native button widths.
+     EXPERIMENT (#55): not while the URL bar is focused, so a click before the delay ends
+     cancels the reveal (use mode 2; mode 1 reveals on focus). */
+  #nav-bar:hover:not(:has(#urlbar[focused])) :is(
     #back-button,
     #forward-button,
     #reload-button,
@@ -2018,11 +2020,11 @@ sidebar-main {
       padding 0.2s ease var(--uc-autohide-nav-delay) !important;
   }
   /* Back button has extra native leading padding (8px left vs 2px); revert misses it */
-  #nav-bar:hover #back-button {
+  #nav-bar:hover:not(:has(#urlbar[focused])) #back-button {
     padding-inline-start: 8px !important;
   }
   /* Disabled back/forward stay visible but dimmed, like native */
-  #nav-bar:hover :is(#back-button, #forward-button)[disabled] {
+  #nav-bar:hover:not(:has(#urlbar[focused])) :is(#back-button, #forward-button)[disabled] {
     opacity: 0.4 !important;
   }
 }
