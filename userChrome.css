@@ -163,6 +163,13 @@
    * misclicked when aiming for the URL bar (1 = hide all, 0 = default reveal) */
   --uc-hide-urlbar-buttons: 0;
 
+  /* URL-bar icons (reader mode, translations, extension icons) – reveal them only when the pointer rests on the
+   * bookmark star, not on bar hover or focus (1 = star hover, 0 = default reveal) */
+  --uc-charms-on-star: 0;
+
+  /* Delay before resting on the star reveals the icons (with --uc-charms-on-star: 1) */
+  --uc-charms-star-delay: 300ms;
+
   /* Pinned toolbar extension icons – hide and reveal on hamburger hover, to
    * keep the one-line layout clean (1 = hide + hover-reveal, 0 = always show) */
   --uc-hide-extension-icons: 1;
@@ -2221,6 +2228,46 @@ sidebar-main {
   padding-block: 0 !important;
   padding-inline: 8px !important;
   margin: 0 !important;
+}
+
+/* Reveal the URL-bar icons from the star instead of from the whole bar (--uc-charms-on-star: 1).
+   Same pattern as the pinned extension icons and the hamburger: a trigger that is always visible,
+   and icons that stay revealed while they themselves are hovered. #page-action-buttons is the group
+   that holds the star and the icons, so hovering the star (the only visible member while the icons
+   are collapsed) reveals the rest, and they sit inside the same group, so they keep it hovered.
+   Firefox itself hides the icons while the URL is being edited, so typing needs no rule here. */
+@container style(--uc-charms-on-star: 1) {
+  /* Hide again: neither bar hover nor focus reveals them. Same collapsed state as the base rule. */
+  #urlbar:is(:hover, [focused]) :is(
+    #reader-mode-button,
+    #taskbar-tabs-button,
+    #translations-button,
+    .urlbar-addon-page-action
+  ) {
+    max-width: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Reveal. Only the hover state carries the delay, so they slide in late and leave at once. The
+     base rule lists its properties instead of using `all`, so the delay can't hold back a hover
+     colour. max-width stays a length (not none), or it would jump and ignore the delay. */
+  #urlbar #page-action-buttons:hover :is(
+    #reader-mode-button,
+    #taskbar-tabs-button,
+    #translations-button,
+    .urlbar-addon-page-action
+  ) {
+    max-width: 40px !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    padding-block: 0 !important;
+    padding-inline: 8px !important;
+    margin: 0 !important;
+    transition-delay: var(--uc-charms-star-delay) !important;
+  }
 }
 
 /* Translations icon, FF153: Mozilla's translations.svg is 17px wide in a
