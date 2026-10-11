@@ -2072,7 +2072,10 @@ sidebar-main {
    The extra :root qualifier outranks the hover and focus reveal above.
    Skipped in Customize mode, where every button must stay reachable. */
 @container style(--uc-hide-disabled-nav-buttons: 1) {
-  :root:not([customizing]) #nav-bar :is(#back-button, #forward-button)[disabled] {
+  /* The second selector is for the click-to-cancel reveal (#55): its :not(:has(#urlbar[focused])) adds an id's
+     worth of specificity to the reveal, which would otherwise outrank this rule while the bar is hovered. */
+  :root:not([customizing]) #nav-bar :is(#back-button, #forward-button)[disabled],
+  :root:not([customizing]) #nav-bar:hover:not(:has(#urlbar[focused])) :is(#back-button, #forward-button)[disabled] {
     opacity: 0 !important;
     width: 0 !important;
     min-width: 0 !important;
